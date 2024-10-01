@@ -38,3 +38,10 @@ INSERT INTO cliente (nome, cpf, telefone) VALUES
 ('Pedro Souza', '34567890123', '(31) 93456-7890'),
 ('Ana Costa', '45678901234', '(41) 94567-8901'),
 ('Lucas Pereira', '56789012345', '(51) 95678-9012');
+
+ INSERT INTO pedido_venda (id_cliente, id_carro, data_pedido, valor_pedido) VALUES
+(1, 1, '2024-10-01', 50000.00),
+(2, 2, '2024-10-02', 45000.00),
+(3, 3, '2024-10-03', 60000.00),
+(4, 4, '2024-10-04', 40000.00),
+(5, 5, '2024-10-05', 55000.00);
