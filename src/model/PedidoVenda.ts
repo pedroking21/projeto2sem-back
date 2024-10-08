@@ -1,178 +1,188 @@
-// Classe que representa um pedido de venda de carro.
+import { DatabaseModel } from "./DatabaseModel";
 
+// Recupera o pool de conexões do banco de dados
+const database = new DatabaseModel().pool;
+
+/**
+ * Classe que representa um pedido de venda.
+ */
 export class PedidoVenda {
 
     /* Atributos */
-    /* Identificador do pedido */
-    private idPedido: number;
-    /* Identificador do carro */
-    private idCarro: number;
-    /* Marca do carro */
-    private marca: string;
-    /* Identificador do cliente */
-    private idCliente: number;
-    /* Modelo do carro */
-    private modelo: string;
-    /* Data do pedido */
-    private dataPedido: Date;
-    /* Ano do carro */
-    private ano: number;
-    /* Valor do pedido */
-    private valorPedido: number;
-    /* Cor do carro */
-    private cor: string;
+    /**
+     * Identificador do pedido de venda.
+     * Inicializado com o valor padrão de 0.
+     */
+    private idPedido: number = 0;
 
     /**
-     * Construtor da classe PedidoVenda
+     * Identificador do carro relacionado ao pedido.
+     */
+    private idCarro: number;
+
+    /**
+     * Identificador do cliente relacionado ao pedido.
+     */
+    private idCliente: number;
+
+    /**
+     * Data do pedido de venda.
+     */
+    private dataPedido: Date;
+
+    /**
+     * Valor total do pedido de venda.
+     */
+    private valorPedido: number;
+
+    /**
+     * Construtor da classe PedidoVenda.
+     * Inicializa os atributos com os valores fornecidos.
      * 
-     * @param idPedido Identificador do pedido
-     * @param idCarro Identificador do carro
-     * @param marca Marca do carro
-     * @param idCliente Identificador do cliente
-     * @param modelo Modelo do carro
-     * @param dataPedido Data do pedido
-     * @param ano Ano do carro
-     * @param valorPedido Valor do pedido
-     * @param cor Cor do carro
+     * @param idCarro Identificador do carro relacionado ao pedido.
+     * @param idCliente Identificador do cliente relacionado ao pedido.
+     * @param dataPedido Data em que o pedido foi realizado.
+     * @param valorPedido Valor total do pedido.
      */
     constructor(
-        idPedido: number,
-        idCarro: number,
-        marca: string,
+        idCarro: number, 
         idCliente: number,
-        modelo: string,
         dataPedido: Date,
-        ano: number,
-        valorPedido: number,
-        cor: string
+        valorPedido: number
     ) {
-        this.idPedido = idPedido;
-        this.idCarro = idCarro;
-        this.marca = marca;
-        this.idCliente = idCliente;
-        this.modelo = modelo;
-        this.dataPedido = dataPedido;
-        this.ano = ano;
-        this.valorPedido = valorPedido;
-        this.cor = cor;
+        this.idCarro = idCarro;           // Atribui o ID do carro ao atributo idCarro.
+        this.idCliente = idCliente;       // Atribui o ID do cliente ao atributo idCliente.
+        this.dataPedido = dataPedido;     // Atribui a data do pedido ao atributo dataPedido.
+        this.valorPedido = valorPedido;   // Atribui o valor do pedido ao atributo valorPedido.
     }
 
     /* Métodos get e set */
+
+    /**
+     * Retorna o identificador do pedido de venda.
+     * 
+     * @returns {number} O identificador do pedido de venda.
+     */
     public getIdPedido(): number {
         return this.idPedido;
     }
 
+    /**
+     * Define o identificador do pedido de venda.
+     * 
+     * @param idPedidoVenda O novo identificador do pedido de venda.
+     */
     public setIdPedido(idPedido: number): void {
         this.idPedido = idPedido;
     }
 
+    /**
+     * Retorna o identificador do carro relacionado ao pedido.
+     * 
+     * @returns {number} O identificador do carro.
+     */
     public getIdCarro(): number {
         return this.idCarro;
     }
 
+    /**
+     * Define o identificador do carro relacionado ao pedido.
+     * 
+     * @param idCarro O novo identificador do carro.
+     */
     public setIdCarro(idCarro: number): void {
         this.idCarro = idCarro;
     }
 
-    public getMarca(): string {
-        return this.marca;
-    }
-
-    public setMarca(marca: string): void {
-        this.marca = marca;
-    }
-
+    /**
+     * Retorna o identificador do cliente relacionado ao pedido.
+     * 
+     * @returns {number} O identificador do cliente.
+     */
     public getIdCliente(): number {
         return this.idCliente;
     }
 
+    /**
+     * Define o identificador do cliente relacionado ao pedido.
+     * 
+     * @param idCliente O novo identificador do cliente.
+     */
     public setIdCliente(idCliente: number): void {
         this.idCliente = idCliente;
     }
 
-    public getModelo(): string {
-        return this.modelo;
-    }
-
-    public setModelo(modelo: string): void {
-        this.modelo = modelo;
-    }
-
+    /**
+     * Retorna a data do pedido de venda.
+     * 
+     * @returns {Date} A data do pedido de venda.
+     */
     public getDataPedido(): Date {
         return this.dataPedido;
     }
 
+    /**
+     * Define a data do pedido de venda.
+     * 
+     * @param dataPedido A nova data do pedido de venda.
+     */
     public setDataPedido(dataPedido: Date): void {
         this.dataPedido = dataPedido;
     }
 
-    public getAno(): number {
-        return this.ano;
-    }
-
-    public setAno(ano: number): void {
-        this.ano = ano;
-    }
-
+    /**
+     * Retorna o valor total do pedido de venda.
+     * 
+     * @returns {number} O valor do pedido de venda.
+     */
     public getValorPedido(): number {
         return this.valorPedido;
     }
 
+    /**
+     * Define o valor total do pedido de venda.
+     * 
+     * @param valorPedido O novo valor do pedido de venda.
+     */
     public setValorPedido(valorPedido: number): void {
         this.valorPedido = valorPedido;
     }
 
-    public getCor(): string {
-        return this.cor;
+    // MÉTODO PARA ACESSAR O BANCO DE DADOS
+    // CRUD Create - Reat - Update - Delete
+    static async listarPedidosVendas(): Promise<Array<PedidoVenda> | null> {
+        //CRIANDO LISTA VAZIA PARA ARMAZENAR OS CLIENTES
+        let listaDePedidoVenda: Array<PedidoVenda> = [];
+
+        try {
+            //Query para consulta no banco de dados
+            const querySelectPedidoVenda = `SELECT * FROM pedido_venda`;
+
+            //executa a query no banco de dados
+            const respostaBD = await database.query(querySelectPedidoVenda);
+
+            respostaBD.rows.forEach((pedidoVenda) => {
+                let novaPedidoVenda = new PedidoVenda(
+                    pedidoVenda.id_carro,
+                    pedidoVenda.id_cliente,
+                    pedidoVenda.data_pedido,
+                    pedidoVenda.valor_pedido
+                )
+
+                // adicionando o ID ao objeto
+                novaPedidoVenda.setIdPedido(pedidoVenda.id_pedido);
+                console.log(novaPedidoVenda);
+                // adiconando o cliente a lista
+                listaDePedidoVenda.push(novaPedidoVenda);
+            });
+
+            // retornando a lista de clientes para quem chamou a função
+            return listaDePedidoVenda
+        } catch (error) {
+            console.log(`Erro ao acessar o modelo: ${error}`);
+            return null;
+            
+        } 
     }
 
-    public setCor(cor: string): void {
-        this.cor = cor;
-    }
-
-    /* Métodos adicionais */
-    /**
-     * Listagem de carros.
-     * 
-     * @returns Array de Carros
-     */
-    public static listarCarros(): Array<PedidoVenda> {
-        // Implementação da listagem de carros
-        return [];
-    }
-
-    /**
-     * Listagem de pedidos.
-     * 
-     * @returns Array de pedidos
-     */
-    public static listarPedidos(): Array<PedidoVenda> {
-        // Implementação da listagem de pedidos
-        return [];
-    }
-
-    /**
-     * Cadastro de um carro.
-     * 
-     * @param carro Carro a ser cadastrado.
-     * @returns boolean indicando sucesso ou falha.
-     */
-    public static cadastroCarro(carro: PedidoVenda): boolean {
-        // Implementação do cadastro
-        return true;
-    }
-
-    /**
-     * Cadastro de um pedido.
-     * 
-     * @param idCliente Identificador do cliente.
-     * @param idCarro Identificador do carro.
-     * @param dataPedido Data do pedido.
-     * @param valorPedido Valor do pedido.
-     * @returns boolean indicando sucesso ou falha.
-     */
-    public static cadastroPedido(idCliente: number, idCarro: number, dataPedido: Date, valorPedido: number): boolean {
-        // Implementação do cadastro do pedido
-        return true;
-    }
 }
