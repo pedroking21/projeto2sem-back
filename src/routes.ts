@@ -6,16 +6,40 @@ import PedidoVendaController from "./controller/PedidoVendaController";
 // Cria um roteador
 const router = Router();
 
-// Criando sua rota principal para a aplicação
-router.get("/", (req:Request, res:Response) => {
-    res.json({ mensagem: "Bem-vindo ao meu servidor"});
+// Criando uma rota principal para a aplicação
+router.get("/", (req: Request, res: Response) => {
+    res.json({ mensagem: "Olá, mundo!" });
 });
 
-router.get('/carro', CarroController.todos);
-router.get('/cliente', ClienteController.todos);
-router.get('/pedidovenda', PedidoVendaController.todos);
+/* 
+* ROTAS PARA CARROS
+*/ 
+// Rota para listar os carros
+router.get("/lista/carros", CarroController.todos);
+// Rota para cadastrar um novo carro
+router.post("/novo/carro", CarroController.novo);
+// Rota para remover um carro
+router.delete("/delete/carro/:idCarro", CarroController.remover);
 
-// Exportando as rotas
-export{ router };
+/* 
+* ROTAS PARA CLIENTES
+*/ 
+// Rota para listar os clientes
+router.get("/lista/clientes", ClienteController.todos);
+// Rota para cadastrar um novo cliente
+router.post("/novo/cliente", ClienteController.novo);
+// Rota para remover um cliente
+router.delete("/delete/cliente/:idCliente", ClienteController.remover);
 
+/* 
+* ROTAS PARA PEDIDOS
+*/  
+// Rota para listar os pedidos
+router.get("/lista/pedidos", PedidoVendaController.todos);
+// Rota para cadastrar um novo pedido
+router.post("/novo/pedido", PedidoVendaController.novo);
+// Rota para remover um carro
+router.delete("/delete/pedido/:idPedidoVenda", PedidoVendaController.remover);
 
+// exportando as rotas
+export { router };
