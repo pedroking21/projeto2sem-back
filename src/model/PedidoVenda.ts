@@ -8,211 +8,185 @@ const database = new DatabaseModel().pool;
 export class PedidoVenda {
 
     /* Atributos */
-    /* Identificador do pedido */
-    private idPedido: number = 0;
-    /* Identificador do carro */
-    private idCarro: number;
-    /* modelo do carro */
-    private idCliente: number;
-    /* ano de fabrição do carro */
-    private dataPedido: Date;
-    /* cor do carro */
-    private valorPedido: number;
+    private idPedido: number = 0; // Identificador do pedido
+    private idCarro: number; // Identificador do carro
+    private idCliente: number; // Identificador do cliente
+    private dataPedido: Date; // Data do pedido
+    private valorPedido: number; // Valor do pedido
 
     /**
-     * Construtor da classe Carro
+     * Construtor da classe PedidoVenda
      * 
-     * @param dataPedido 
-     * @param valorPedido Cor do carro
+     * @param idCarro Identificador do carro
+     * @param idCliente Identificador do cliente
+     * @param dataPedido Data do pedido
+     * @param valorPedido Valor do pedido
      */
     constructor(
         idCarro: number,
         idCliente: number,
         dataPedido: Date,
-        valorPedido: number,
+        valorPedido: number
     ) {
         this.idCarro = idCarro;
-        this.idCliente = idCliente;   
+        this.idCliente = idCliente;
         this.dataPedido = dataPedido;
         this.valorPedido = valorPedido;
     }
 
     /* Métodos get e set */
-    /**
-     * Recupera o identificador do pedido
-     * @returns o identificador do pedido
-     */
+
     public getIdPedido(): number {
         return this.idPedido;
     }
 
-    /**
-     * Atribui um valor ao identificador do pedido
-     * @param idPedido novo identificado do pedido
-     */
     public setIdPedido(idPedido: number): void {
         this.idPedido = idPedido;
     }
 
-    /**
-     * Retorna o identificador do carro.
-     *
-     * @returns {number} O identificador do carro do carro.
-     */
     public getIdCarro(): number {
         return this.idCarro;
     }
 
-    /**
-     * Define a identificador do carro.
-     * 
-     * @param idCarro - O identificador do carro a ser definido.
-     */
     public setIdCarro(idCarro: number): void {
         this.idCarro = idCarro;
     }
 
-    /**
-     * Retorna o identificador do cliente.
-     *
-     * @returns {number} O identificador do cliente.
-     */
     public getIdCliente(): number {
         return this.idCliente;
     }
 
-    /**
-     * Define o identificador do cliente.
-     * 
-     * @param idCliente - O identificador do cliente a ser definido.
-     */
     public setIdCliente(idCliente: number): void {
         this.idCliente = idCliente;
     }
 
-    /**
-     * Retorna a data do pedido.
-     *
-     * @returns {Date} A data do pedido.
-     */
     public getDataPedido(): Date {
         return this.dataPedido;
     }
 
-    /**
-     * Define a data do pedido.
-     * 
-     * @param dataPedido - A data do pedido a ser definida.
-     */
     public setDataPedido(dataPedido: Date): void {
         this.dataPedido = dataPedido;
     }
 
-    /**
-     * Retorna o valor do pedido.
-     *
-     * @returns {number} O valor do pedido.
-     */
     public getValorPedido(): number {
         return this.valorPedido;
     }
 
-    /**
-     * Define o valor do pedido.
-     * 
-     * @param valorPedido - O valor do pedido a ser definido.
-     */
     public setValorPedido(valorPedido: number): void {
         this.valorPedido = valorPedido;
-}
+    }
 
-//MÉTODO PARA ACESSAR O BANCO DE DADOS
-    //CRUD create - READ - update - delete
+    /* Métodos para acessar o banco de dados */
+
+    /**
+     * Lista todos os pedidos no banco de dados.
+     */
     static async listarPedidos(): Promise<Array<PedidoVenda> | null> {
-        //Criando lista vazia para armazenar os pedidos
         let listaDePedidos: Array<PedidoVenda> = [];
 
         try {
-            // Query para conslta no banco de dados
-            const querySelectCliente = `SELECT * FROM pedido_venda;`;
-
-            // Executa a query no banco de dados
-            const respostaBD = await database.query(querySelectCliente);
+            const query = `SELECT * FROM pedido_venda;`;
+            const respostaBD = await database.query(query);
 
             respostaBD.rows.forEach((pedido) => {
-                let novoPedido = new PedidoVenda(
+                const novoPedido = new PedidoVenda(
                     pedido.id_carro,
                     pedido.id_cliente,
                     pedido.data_pedido,
                     pedido.valor_pedido
                 );
-                //Adicionando o ID ao objeto
                 novoPedido.setIdPedido(pedido.id_pedido);
-
-                //Adicionando o pedido na lista
                 listaDePedidos.push(novoPedido);
             });
 
-            //Retornando a lista de pedidos para quem chamou a função
             return listaDePedidos;
         } catch (error) {
-            console.log(`Erro ao acessar o modelo: ${error}`);
+            console.error(`Erro ao listar pedidos: ${error}`);
             return null;
         }
     }
-/**
-     * Método para criar um novo pedido no banco de dados
+
+    /**
+     * Cadastra um novo pedido no banco de dados.
      */
-static async cadastroPedido(pedidoVenda: PedidoVenda): Promise<boolean> {
-    try {
-        // query para fazer insert de um Pedido de Venda no banco de dados
-        const queryInsertPedidoVenda = `INSERT INTO pedido_venda (id_carro, id_cliente, data_pedido, valor_pedido)
-                                    VALUES
-                                    ('${pedidoVenda.getIdCarro()}', 
-                                    '${pedidoVenda.getIdCliente()}', 
-                                    '${pedidoVenda.getDataPedido()}',
-                                     ${pedidoVenda.getValorPedido()} )
-                                    RETURNING id_pedido;`;
+    static async cadastrarPedido(pedidoVenda: PedidoVenda): Promise<boolean> {
+        try {
+            const query = `
+                INSERT INTO pedido_venda (id_carro, id_cliente, data_pedido, valor_pedido)
+                VALUES ($1, $2, $3, $4)
+                RETURNING id_pedido;
+            `;
 
-        // executa a query no banco e armazena a resposta
-        const respostaBD = await database.query(queryInsertPedidoVenda);
-        // verifica se a quantidade de linhas modificadas é diferente de 0
-        if (respostaBD.rowCount != 0) {
-            console.log(`Pedido cadastrado com sucesso! ID do pedido: ${respostaBD.rows[0].id_pedido}`);
-            // true significa que o cadastro foi feito
-            return true;
+            const respostaBD = await database.query(query, [
+                pedidoVenda.getIdCarro(),
+                pedidoVenda.getIdCliente(),
+                pedidoVenda.getDataPedido(),
+                pedidoVenda.getValorPedido()
+            ]);
+
+            if (respostaBD.rowCount !== 0) {
+                console.log(`Pedido cadastrado com sucesso! ID: ${respostaBD.rows[0].id_pedido}`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Erro ao cadastrar o pedido:', error);
+            return false;
         }
-        // false significa que o cadastro NÃO foi feito.
-        return false;
-        // tratando o erro
-    } catch (error) {
-        // imprime outra mensagem junto com o erro
-        console.log('Erro ao cadastrar o pedido. Verifique os logs para mais detalhes.');
-        // imprime o erro no console
-        console.log(error);
-        // retorno um valor falso
-        return false;
     }
-}
-static async removerPedido(idPedidoVenda: number): Promise<boolean> {
-    try{
-        const queryDeletePedidoVenda = `DELETE FROM pedido WHERE id_pedidoVenda = ${idPedidoVenda}`;
 
-        const respostaBD = await database.query(queryDeletePedidoVenda);
+    /**
+     * Remove um pedido do banco de dados.
+     */
+    static async removerPedido(idPedido: number): Promise<boolean> {
+        try {
+            const query = `DELETE FROM pedido_venda WHERE id_pedido = $1;`;
+            const respostaBD = await database.query(query, [idPedido]);
 
-        if(respostaBD.rowCount != 0) {
-            console.log(`Pedido removido com sucesso. ID removido: ${idPedidoVenda}`);
+            if (respostaBD.rowCount !== 0) {
+                console.log(`Pedido removido com sucesso. ID: ${idPedido}`);
+                return true;
+            }
 
-            return true;
+            return false;
+        } catch (error) {
+            console.error('Erro ao remover o pedido:', error);
+            return false;
         }
-
-        return false;
-
-
-    } catch (error) {
-        console.log('Erro ao remover o pedido. Verifique os logs para mais detalhes.');
-        console.log(error);
-        return false;
     }
-}
+
+    /**
+     * Atualiza um pedido no banco de dados.
+     */
+    static async atualizarPedido(pedido: PedidoVenda): Promise<boolean> {
+        try {
+            const query = `
+                UPDATE pedido_venda SET
+                    id_carro = $1,
+                    id_cliente = $2,
+                    data_pedido = $3,
+                    valor_pedido = $4
+                WHERE id_pedido = $5;
+            `;
+
+            const respostaBD = await database.query(query, [
+                pedido.getIdCarro(),
+                pedido.getIdCliente(),
+                pedido.getDataPedido(),
+                pedido.getValorPedido(),
+                pedido.getIdPedido()
+            ]);
+
+            if (respostaBD.rowCount !== 0) {
+                console.log(`Pedido atualizado com sucesso! ID: ${pedido.getIdPedido()}`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Erro ao atualizar o pedido:', error);
+            return false;
+        }
+    }
 }

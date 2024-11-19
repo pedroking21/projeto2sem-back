@@ -77,6 +77,42 @@ static async remover(req: Request, res: Response) {
         return res.status(400).json({ mensagem: "Não foi possível remover o pedido. Entre em contato com o administrador do sistema."});
     }
 }
+// Método para atualizar um pedido
+static async atualizar(req: Request, res: Response): Promise<Response> {
+    try {
+        // Extrai o objeto pedido do corpo da requisição
+        const pedidoRecebido: PedidoVendaDTO = req.body;
+
+        // Extrai o ID do pedido a partir dos parâmetros da URL
+        const idPedidoRecebido = parseInt(req.params.idPedido as string);
+
+        // Cria uma instância do objeto Pedido com os dados recebidos
+        const pedidoAtualizado = new PedidoVenda(
+            pedidoRecebido.idCliente,
+            pedidoRecebido.idCarro,
+            pedidoRecebido.dataPedido,
+            pedidoRecebido.valorPedido
+        );
+
+        // Define o ID do pedido na instância
+        pedidoAtualizado.setIdPedido(idPedidoRecebido);
+
+        // Chama o método de atualização do modelo
+        const respostaModelo = await PedidoVenda.atualizarPedido(pedidoAtualizado);
+
+        // Retorna sucesso caso o pedido tenha sido atualizado
+        if (respostaModelo) {
+            return res.status(200).json({ mensagem: "pedido atualizado com sucesso!" });
+        } else {
+            // Caso a atualização não tenha sido realizada, retorna erro
+            return res.status(400).json({ mensagem: "Erro ao atualizar o pedido. Entre em contato com o administrador do sistema." });
+        }
+    } catch (error) {
+        // Tratamento de erros, retornando uma mensagem apropriada
+        console.log(`Erro ao atualizar o pedido. ${error}`);
+        return res.status(400).json({ mensagem: "Não foi possível atualizar o pedido. Entre em contato com o administrador do sistema." });
+    }
+}
 }
 
 // Exporta a classe 'PedidoVendaController' para que possa ser utilizada em outras partes do código

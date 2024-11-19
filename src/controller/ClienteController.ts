@@ -82,6 +82,42 @@ static async remover(req: Request, res: Response) {
         return res.status(400).json({ mensagem: "Não foi possível remover o cliente. Entre em contato com o administrador do sistema."});
     }
 }
+// Método para atualizar um cliente
+static async atualizar(req: Request, res: Response): Promise<Response> {
+    try {
+        // Extrai o objeto carro do corpo da requisição
+        const clienteRecebido: ClienteDTO = req.body;
+
+        // Extrai o ID do cliente a partir dos parâmetros da URL
+        const idClienteRecebido = parseInt(req.params.idCliente as string);
+
+        // Cria uma instância do objeto Cliente com os dados recebidos
+        const clienteAtualizado = new Cliente(
+            clienteRecebido.nome,
+            clienteRecebido.cpf,
+            clienteRecebido.telefone
+        );
+
+        // Define o ID do cliente na instância
+        clienteAtualizado.setIdCliente(idClienteRecebido);
+
+        // Chama o método de atualização do modelo
+        const respostaModelo = await Cliente.atualizarCliente(clienteAtualizado);
+
+        // Retorna sucesso caso o cliente tenha sido atualizado
+        if (respostaModelo) {
+            return res.status(200).json({ mensagem: "Cliente atualizado com sucesso!" });
+        } else {
+            // Caso a atualização não tenha sido realizada, retorna erro
+            return res.status(400).json({ mensagem: "Erro ao atualizar o cliente. Entre em contato com o administrador do sistema." });
+        }
+    } catch (error) {
+        // Tratamento de erros, retornando uma mensagem apropriada
+        console.log(`Erro ao atualizar o pedido. ${error}`);
+        return res.status(400).json({ mensagem: "Não foi possível atualizar o cliente. Entre em contato com o administrador do sistema." });
+    }
+}
+
 }
 
 // Exporta a classe 'ClienteController' para que possa ser utilizada em outras partes do código

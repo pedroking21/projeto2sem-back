@@ -224,25 +224,63 @@ export class Carro {
         }
     }
 
-    static async removerCarro(idCarro: number): Promise<boolean> {
-        try{
-            const queryDeleteCarro = `DELETE FROM carro WHERE id_carro = ${idCarro}`;
+   // Função para remover um carro do banco de dados
+static async removerCarro(idCarro: number): Promise<boolean> {
+    try {
+        // Monta a query de exclusão com base no ID do carro
+        const queryDeleteCarro = `DELETE FROM carro WHERE id_carro = ${idCarro}`;
 
-            const respostaBD = await database.query(queryDeleteCarro);
+        // Executa a query no banco de dados
+        const respostaBD = await database.query(queryDeleteCarro);
 
-            if(respostaBD.rowCount != 0) {
-                console.log(`Carro removido com sucesso. ID removido: ${idCarro}`);
-
-                return true;
-            }
-
-            return false;
-
-
-        } catch (error) {
-            console.log('Erro ao remover o carro. Verifique os logs para mais detalhes.');
-            console.log(error);
-            return false;
+        // Verifica se alguma linha foi afetada (ou seja, se o carro foi realmente removido)
+        if (respostaBD.rowCount != 0) {
+            console.log(`Carro removido com sucesso. ID removido: ${idCarro}`);
+            return true; // Retorna sucesso caso o carro tenha sido removido
         }
+
+        // Caso nenhuma linha tenha sido afetada, retorna falso
+        return false;
+
+    } catch (error) {
+        // Tratamento de erros
+        console.log('Erro ao remover o carro. Verifique os logs para mais detalhes.');
+        console.log(error);
+        return false; // Retorna falso em caso de falha
     }
+}
+
+// Função para atualizar um carro no banco de dados
+static async atualizarCarro(carro: Carro): Promise<boolean> {
+    try {
+        // Monta a query de atualização com os dados do carro
+        // É importante sanitizar esses valores para evitar SQL Injection
+        const queryUpdateCarro = `
+            UPDATE carro SET 
+                marca = '${carro.getMarca()}',
+                modelo = '${carro.getModelo()}',
+                ano = '${carro.getAno()}',
+                cor = '${carro.getCor()}'
+            WHERE id_carro = ${carro.getIdCarro()};
+        `;
+
+        // Executa a query no banco de dados
+        const respostaBD = await database.query(queryUpdateCarro);
+
+        // Verifica se alguma linha foi afetada (ou seja, se o carro foi atualizado com sucesso)
+        if (respostaBD.rowCount != 0) {
+            console.log(`Carro atualizado com sucesso! ID: ${carro.getIdCarro()}`);
+            return true; // Retorna sucesso
+        }
+
+        // Caso nenhuma linha tenha sido afetada, retorna falso
+        return false;
+
+    } catch (error) {
+        // Tratamento de erros
+        console.log('Erro ao atualizar o carro. Verifique os logs para mais detalhes.');
+        console.log(error);
+        return false; // Retorna falso em caso de falha
+    }
+}
 }
